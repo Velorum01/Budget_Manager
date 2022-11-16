@@ -80,7 +80,7 @@ func SetBudget(a fyne.App, w fyne.Window) {
 	budgetInp := widget.NewEntry()
 	budgetInp.SetPlaceHolder("Budget:")
 
-	w.SetContent(container.NewVBox(
+	view.SetContent(container.NewVBox(
 		budgetInp,
 		widget.NewButton("Set Budget", func() {
 
@@ -93,6 +93,6 @@ func SetBudget(a fyne.App, w fyne.Window) {
 		}),
 	))
 
-	w.Resize(fyne.NewSize(350, 300))
-	w.Show()
+	view.Resize(fyne.NewSize(350, 300))
+	view.Show()
 }
