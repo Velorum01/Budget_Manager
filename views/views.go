@@ -2,11 +2,19 @@ package views
 
 import (
 	"fmt"
+	"strconv"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/widget"
+	"github.com/Velorum01/Budget_Manager/validations"
 )
+
+func popUp(a fyne.App, w fyne.Window, msg string) {
+	view := a.NewWindow("Message")
+	view.SetContent(widget.NewLabel(msg))
+	view.Show()
+}
 
 func ExpenseReport(a fyne.App, w fyne.Window) {
 	view := a.NewWindow("Expense Report")
@@ -38,10 +46,10 @@ func AddExpense(a fyne.App, w fyne.Window) {
 	var category string
 
 	title := widget.NewEntry()
-	price := widget.NewEntry()
+	priceInp := widget.NewEntry()
 
 	title.SetPlaceHolder("Expense name:")
-	price.SetPlaceHolder("Expense:")
+	priceInp.SetPlaceHolder("Expense:")
 
 	categories := widget.NewRadioGroup([]string{
 		"Food",
@@ -55,10 +63,21 @@ func AddExpense(a fyne.App, w fyne.Window) {
 
 	view.SetContent(container.NewVBox(
 		title,
-		price,
+		priceInp,
 		categories,
 		widget.NewButton("Submit", func() {
-			fmt.Println(category)
+			if !validations.IsNewExpenseValid(title.Text, priceInp.Text, category) {
+				popUp(a, view, "Please fill all fields")
+				return
+			}
+
+			price, err := strconv.ParseFloat(priceInp.Text, 64)
+
+			if err != nil {
+				popUp(a, view, "Please only enter numbers")
+			}
+
+			fmt.Println(price)
 		}),
 
 		widget.NewButton("Home", func() {
@@ -83,7 +102,18 @@ func SetBudget(a fyne.App, w fyne.Window) {
 	view.SetContent(container.NewVBox(
 		budgetInp,
 		widget.NewButton("Set Budget", func() {
+			if len(budgetInp.Text) == 0 {
+				popUp(a, view, "Please only enter numbers")
+				return
+			}
 
+			budget, err := strconv.ParseFloat(budgetInp.Text, 64)
+
+			if err != nil {
+				popUp(a, view, "Please only enter numbers")
+			}
+
+			fmt.Println(budget)
 		}),
 
 		widget.NewButton("Home", func() {
